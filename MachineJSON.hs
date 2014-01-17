@@ -107,9 +107,3 @@ instance ToJSON NIC where
             toPair (Gateway gateway) = "gateway" .= gateway
             toPair (IP ip)           = "ip" .= ip
             toPair (Netmask netmask) = "netmask" .= netmask
-
-instance ToJSON CustomerMetadataProp where
-    toJSON (RootAuthorizedKeys xs) = object [
-        "root_authorized_keys" .= intercalate "\n" (map unbox xs)
-      ]
-      where unbox (RootAuthorizedKey x) = x

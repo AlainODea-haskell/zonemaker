@@ -92,10 +92,10 @@ instance Show IPAddress where
     show (IPAddress x) = show x
 
 instance ToJSON IPAddress where
-    toJSON x = toJSON $ intercalate "." [showByte 0 x, showByte 1 x, showByte 2 x, showByte 3 x]
-      where showByte n x = pack . show $ byte n x
-            byte :: Int -> IPAddress -> IPAddress
-            byte n x | n == 0 = x `shiftR` 24
+    toJSON x = toJSON $ intercalate "." $ map (showByte x) [0..3]
+      where showByte x n = pack . show $ byte x n
+            byte :: IPAddress -> Int -> IPAddress
+            byte x n | n == 0 = x `shiftR` 24
                      | n == 1 = (x .&. 255 `shiftL` 16) `shiftR` 16
                      | n == 2 = (x .&. 255 `shiftL` 8) `shiftR` 8
                      | n == 3 = x .&. 255

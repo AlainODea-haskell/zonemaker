@@ -10,7 +10,7 @@ default (T.Text)
 main = do
   createTestMachine "tomcat01.alainodea.local" $ ip 192 168 2 22
 
-createTestMachine :: String -> IPAddress -> IO ()
+createTestMachine :: T.Text -> IPAddress -> IO ()
 createTestMachine = createMachine classBProdnet users
 
 classBProdnet :: IPAddress -> NIC
@@ -30,14 +30,14 @@ users = [
 alain_odea :: RootAuthorizedKey
 alain_odea = RootAuthorizedKey "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCTLDnggGlVWHOrlbEpLP8ZCmUQrUwq13+x+e216gghxQi+IZiEfTpQWoFqz5opDVgNzRdBWfMcS6qhBK1YyIt/I+W6tZTsvR3Ncq6XS0EATdSFZWozpgrC5jFnR1fAAoAJCDqcUs7lMd2Fg5MJe3y9PTlcFP+WOxfN/3zwqd1kH0hCJGLZbS3LgB7IaxLQylLwa6MzOvsw/65s24whGfGCW6Fgh/tsC2W2wLzKix6qNg8ypoBYtBZqtx41quDDfg62bDX53CXgqDxiYtUvQGUA7jvALtig8ttAZyZdWbAIgKKwURZjQIFIMMPhpT6eHkSIQ3qXNkh2qvlOmvM4s2LJ alain.odea@gmail.com"
 
-createMachine :: (IPAddress -> NIC) -> [RootAuthorizedKey] -> String -> IPAddress -> IO ()
+createMachine :: (IPAddress -> NIC) -> [RootAuthorizedKey] -> T.Text -> IPAddress -> IO ()
 createMachine nicBuilder keys hostname hostIp = shelly $ do
   setStdin $ T.decodeUtf8 . BL.toStrict . encode . machineJSON $ MachineSpec [
       Brand Joyent
     , ImageUUID imageUuid
     , MaxPhysicalMemory maxMemory
-    , Hostname $ T.pack hostname
-    , DNSDomain $ T.pack dnsDomain
+    , Hostname hostname
+    , DNSDomain dnsDomain
     , Resolvers resolvers
     , Alias alias
     , NICs [nicBuilder hostIp]

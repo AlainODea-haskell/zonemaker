@@ -21,7 +21,6 @@ executable zonemaker
   main-is:
     Main.hs
   build-depends: base ==4.6.*
-               , amqp ==0.7.*
                , bytestring ==0.10.*
                , text ==0.11.*
                , shelly ==1.3.*

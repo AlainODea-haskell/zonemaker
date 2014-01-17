@@ -17,6 +17,7 @@ module MachineJSON
    , IPAddress
    , NIC( NIC )
    , NICProp( NICTag
+            , VLAN
             , Gateway
             , IP
             , Netmask )
@@ -50,7 +51,7 @@ machineJSON (MachineSpec properties) =
           metaPair (RootAuthorizedKeys xs) =
               "root_authorized_keys" .= intercalate "\n" (map unbox xs)
           metaPair (UserScript x) =
-              "user_script" .= x
+              "user-script" .= x
           unbox (RootAuthorizedKey x) = x
 
 newtype MachineSpec = MachineSpec [MachineProp]
@@ -78,6 +79,7 @@ newtype IPAddress = IPAddress Word32
 newtype NIC = NIC [NICProp]
 data NICProp =
       NICTag Text
+    | VLAN Int
     | Gateway IPAddress
     | IP IPAddress
     | Netmask IPAddress
@@ -114,6 +116,7 @@ instance ToJSON IPAddress where
 instance ToJSON NIC where
     toJSON (NIC props) = object $ map toPair props
       where toPair (NICTag nicTag)   = "nic_tag" .= nicTag
+            toPair (VLAN vlan)       = "vlan_id" .= vlan
             toPair (Gateway gateway) = "gateway" .= gateway
             toPair (IP ip)           = "ip" .= ip
             toPair (Netmask netmask) = "netmask" .= netmask

@@ -23,6 +23,5 @@ executable zonemaker
   build-depends: base ==4.6.*
                , bytestring ==0.10.*
                , text ==0.11.*
-               , shelly ==1.3.*
                , aeson ==0.7.*
                , network ==2.4.*

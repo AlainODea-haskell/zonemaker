@@ -1,6 +1,7 @@
 module MachineJSON
    ( machineJSON
    , ip
+   , ipString
    , MachineSpec( MachineSpec )
    , MachineProp( Brand
                 , ImageUUID
@@ -27,9 +28,10 @@ module MachineJSON
 import           Data.Bits      (Bits, shiftL, shiftR, (.&.))
 import           Data.String    (IsString (fromString))
 import           Data.Text      (Text, intercalate, pack)
+import qualified Data.Text      as T
 import qualified Data.Text.IO   as T
 import           Data.Aeson.Types (ToJSON(toJSON), (.=), Value, object)
-import           Network.Socket (HostAddress)
+import           GHC.Word       (Word32)
 import Data.Char (toLower)
 
 machineJSON :: MachineSpec -> Value
@@ -70,7 +72,7 @@ data BrandValue =
 instance ToJSON BrandValue where
     toJSON = toJSON . map toLower . show
 
-newtype IPAddress = IPAddress HostAddress
+newtype IPAddress = IPAddress Word32
     deriving (Num, Eq, Data.Bits.Bits)
 
 newtype NIC = NIC [NICProp]
@@ -84,6 +86,14 @@ data CustomerMetadataProp =
       RootAuthorizedKeys [RootAuthorizedKey]
     | UserScript Text
 newtype RootAuthorizedKey = RootAuthorizedKey Text
+
+ipString :: String -> IPAddress
+ipString addr = ipList $ map (\x -> readIPAddress $ T.unpack x) (T.split (== '.') (T.pack addr))
+
+readIPAddress x = IPAddress (read x :: Word32)
+
+ipList :: (Num a, Bits a) => [a] -> a
+ipList [o1,o2,o3,o4] = ip o1 o2 o3 o4
 
 ip :: (Num a, Bits a) => a -> a -> a -> a -> a
 ip oct1 oct2 oct3 oct4 = oct1 `shiftL` 24 + oct2 `shiftL` 16 + oct3 `shiftL` 8 + oct4

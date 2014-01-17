@@ -2,10 +2,13 @@ import MachineJSON
 import qualified Data.Text as T
 import qualified Data.ByteString.Lazy as BL
 import Data.Aeson (encode)
+import System.Environment (getArgs)
 default (T.Text)
 
 main = do
-  BL.putStr $ createTestMachine "tomcat01.alainodea.local" $ ip 192 168 2 22
+  args <- getArgs
+  let [hostname, addr] = args
+  BL.putStr $ createTestMachine (T.pack hostname) $ ipString addr
   putStrLn ""
 
 createTestMachine = createMachine classBProdnet users

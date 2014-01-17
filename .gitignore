@@ -1,0 +1,6 @@
+*~
+/cabal-dev
+/dist
+/.cabal-sandbox
+/.shelly
+/cabal.sandbox.config
